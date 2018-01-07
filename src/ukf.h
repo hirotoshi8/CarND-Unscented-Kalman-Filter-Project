@@ -64,9 +64,21 @@ public:
   ///* Augmented state dimension
   int n_aug_;
 
+  //Column dimention of the Sigma Point
+  int n_sigma_;
+
   ///* Sigma point spreading parameter
   double lambda_;
 
+
+  //Process noise covariance matrix
+  MatrixXd Q_;
+
+  //Measurement noise covariance matrix R
+  MatrixXd R_rader_;
+
+  //Measurement noise covariance matrix R for lidar
+  MatrixXd R_lidar_;
 
   /**
    * Constructor
