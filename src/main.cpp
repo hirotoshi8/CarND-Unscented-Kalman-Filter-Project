@@ -133,6 +133,10 @@ int main()
 
     	  VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
 
+		  //debug
+		  cout << "NIS for Lidar: " << ukf.NIS_laser << endl;
+		  cout << "NIS for Radar: " << ukf.NIS_radar << endl;
+
           json msgJson;
           msgJson["estimate_x"] = p_x;
           msgJson["estimate_y"] = p_y;

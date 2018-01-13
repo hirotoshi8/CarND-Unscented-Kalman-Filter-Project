@@ -80,6 +80,13 @@ public:
   //Measurement noise covariance matrix R for lidar
   MatrixXd R_lidar_;
 
+  //Transfer matrix for Lidar
+  MatrixXd H_laser_;
+
+  //NIS
+  double NIS_laser;
+  double NIS_radar;
+
   /**
    * Constructor
    */
@@ -114,6 +121,16 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+private:
+
+	void make_sigma_point(MatrixXd *Xsig_aug);
+
+	void predict_sigma_point(const MatrixXd *Xsig_aug, double delta_t2);
+
+	void predict_state_vector(void);
+
+	void Normarize_angle(double &theta);
 };
 
 #endif /* UKF_H */
