@@ -13,7 +13,7 @@ using std::vector;
  */
 UKF::UKF() {
   // if this is false, laser measurements will be ignored (except during init)
-  use_laser_ = false;
+  use_laser_ = true;
 
   // if this is false, radar measurements will be ignored (except during init)
   use_radar_ = true;
@@ -193,17 +193,13 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
 	//debug
 	//cout << "---------- Start Update ----------" << endl;
-	if (this->use_radar_) {
-		if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
-			/* Update */
-			this->UpdateRadar(meas_package);
-		}
+	if (this->use_radar_ && meas_package.sensor_type_ == MeasurementPackage::RADAR) {
+		/* Update */
+		this->UpdateRadar(meas_package);
 	}
-	if (this->use_laser_) {
-		if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
-			/* Update */
-			this->UpdateLidar(meas_package);
-		}
+	if (this->use_laser_ && meas_package.sensor_type_ == MeasurementPackage::LASER) {
+		/* Update */
+		this->UpdateLidar(meas_package);
 	}
 }
 
@@ -294,11 +290,10 @@ void UKF::predict_sigma_point(const MatrixXd *Xsig_aug_in, double delta_t){
 }
 
 void UKF::predict_state_vector(void) {
+
 	/* Predict the State Vector  */
 	x_.fill(0);
-	for (int i = 0; i < n_sigma_; i++) {
-		x_ += weights_(i)*Xsig_pred_.col(i);
-	}
+	x_ = Xsig_pred_ * weights_;
 
 	/* Predict the State Covariance Matrix */
 	P_.fill(0);
@@ -419,7 +414,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
 	/*Predicted Mean state vector Z_hat */
 	//mean predicted measurement
-	VectorXd z_pred = VectorXd(n_z);
+	VectorXd z_pred = VectorXd::Zero(n_z);
 	for (int i = 0; i < this->n_sigma_; i++) {
 		z_pred = z_pred + weights_(i) * Zsig.col(i);
 	}
